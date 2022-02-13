@@ -9,7 +9,8 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            Raster raster = RasterReader.ReadRaster("Data/Data1.csv");
+            Raster raster1 = RasterReader.ReadRaster("Data/Data1.csv");
+            Raster raster2 = RasterReader.ReadRaster("Data/Data2.csv");
         }
     }
 }
