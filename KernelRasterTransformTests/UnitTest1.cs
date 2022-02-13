@@ -9,8 +9,20 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            Raster raster1 = RasterReader.ReadRaster("Data/Data1.csv");
-            Raster raster2 = RasterReader.ReadRaster("Data/Data2.csv");
+            Raster input = RasterReader.ReadRaster("Data/Data2.csv");
+            Raster output = new(1000);
+            MeanKernelTransform transform = new(5);
+
+            for (int y = 0; y < 1000; y++)
+            {
+                for (int x = 0; x < 1000; x++)
+                {
+                    float? result = transform.Transform(input, x, y);
+                    output.SetValue(x, y, result);
+                }
+            }
+
+            float? f = output.GetValue(500, 500);
         }
     }
 }

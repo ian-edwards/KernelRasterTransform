@@ -6,7 +6,9 @@
 
         readonly float?[] _data;
 
-        public float? GetValue(int x, int y) => _data[x + y * EdgeSize];
+        public float? GetValue(int x, int y) => x < 0 || x >= EdgeSize || y < 0 || y >= EdgeSize
+            ? null
+            : _data[x + y * EdgeSize];
 
         public void SetValue(int x, int y, float? value) => _data[x + y * EdgeSize] = value;
 
