@@ -1,6 +1,6 @@
 ﻿namespace KernelRasterTransform
 {
-    public class Raster
+    public class SquareRaster
     {
         public int EdgeSize { get; private init; }
 
@@ -12,7 +12,7 @@
 
         public void SetValue(int x, int y, float? value) => _data[x + y * EdgeSize] = value;
 
-        public Raster(int edgeSize)
+        public SquareRaster(int edgeSize)
         {
             if (edgeSize < 0) throw new ArgumentOutOfRangeException(nameof(edgeSize), "invalid negative");
             int size = edgeSize * edgeSize;
@@ -21,7 +21,7 @@
             EdgeSize = edgeSize;
         }
 
-        internal Raster(int edgeSize, float?[] data)
+        internal SquareRaster(int edgeSize, float?[] data)
         {
             if (data is null) throw new ArgumentNullException(nameof(data));
             if (edgeSize < 0) throw new ArgumentOutOfRangeException(nameof(edgeSize), "invalid negative");

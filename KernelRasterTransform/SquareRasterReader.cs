@@ -1,14 +1,15 @@
 ﻿namespace KernelRasterTransform
 {
-    public static class RasterReader
+    public static class SquareRasterReader
     {
-        public static Raster ReadRaster(string path)
+        public static SquareRaster ReadSquareRaster(string path)
         {
+            // todo bufferSize optimize
             using FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.None,
                 bufferSize: 4096, FileOptions.SequentialScan);
             using StreamReader reader = new(file);
             string? line = reader.ReadLine();
-            if (line is null) return new Raster(0);
+            if (line is null) return new SquareRaster(0);
             float?[] data = new float?[line.Length];
             int edgeSize = Deserialize(line, data, 0);
             int size = edgeSize * edgeSize;
@@ -16,12 +17,13 @@
             int offset = edgeSize;
             while ((line = reader.ReadLine()) is not null)
             {
-                Deserialize(line, data, offset);
-                // todo validate width
-                offset += edgeSize;
+                int rowSize = Deserialize(line, data, offset);
+                if (rowSize != edgeSize) throw new ArgumentException("not square raster", nameof(path));
+                offset += rowSize;
             }
-            // todo validate height
-            return new Raster(edgeSize, data);
+            int rowCount = offset / edgeSize;
+            if (rowCount != edgeSize) throw new ArgumentException("not square raster", nameof(path));
+            return new SquareRaster(edgeSize, data);
         }
 
         static int Deserialize(string line, float?[] data, int offset)

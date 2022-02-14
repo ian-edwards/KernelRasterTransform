@@ -9,8 +9,8 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            Raster input = RasterReader.ReadRaster("Data/Data2.csv");
-            Raster output = new(1000);
+            SquareRaster input = SquareRasterReader.ReadSquareRaster("Data/Data2.csv");
+            SquareRaster output = new(1000);
             MeanKernelTransform transform = new(5);
 
             for (int y = 0; y < 1000; y++)

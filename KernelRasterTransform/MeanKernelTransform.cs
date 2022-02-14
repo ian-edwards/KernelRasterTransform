@@ -16,7 +16,7 @@
             size = edgeSize * edgeSize;
         }
 
-        public float? Transform(Raster raster, int x, int y)
+        public float? Transform(SquareRaster raster, int x, int y)
         {
             bool hasResult = false;
             float result = 0;
