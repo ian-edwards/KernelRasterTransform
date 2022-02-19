@@ -16,7 +16,7 @@
             size = edgeSize * edgeSize;
         }
 
-        public float? Transform(SquareRaster raster, int x, int y)
+        public float Transform(SquareRaster raster, int x, int y)
         {
             bool hasResult = false;
             float result = 0;
@@ -24,12 +24,15 @@
             {
                 for (int xn = 0, xi = x - RadiusSize; xn < edgeSize; xn++, xi++)
                 {
-                    float? value = raster.GetValue(xi, yi);
-                    result += value ?? 0;
-                    hasResult = value.HasValue;
+                    float value = raster.GetValue(xi, yi);
+                    if (value != float.NaN)
+                    {
+                        result += value;
+                        hasResult = true;
+                    }
                 }
             }
-            return hasResult ? result / size : null;
+            return hasResult ? result / size : float.NaN;
         }
     }
 }

@@ -17,12 +17,12 @@ namespace KernelRasterTransformTests
             {
                 for (int x = 0; x < 1000; x++)
                 {
-                    float? result = transform.Transform(input, x, y);
+                    float result = transform.Transform(input, x, y);
                     output.SetValue(x, y, result);
                 }
             }
 
-            float? f = output.GetValue(500, 500);
+            float f = output.GetValue(500, 500);
         }
     }
 }

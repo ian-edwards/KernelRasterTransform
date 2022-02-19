@@ -4,13 +4,12 @@
     {
         public static SquareRaster ReadSquareRaster(string path)
         {
-            // todo bufferSize optimize
             using FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.None,
                 bufferSize: 4096, FileOptions.SequentialScan);
             using StreamReader reader = new(file);
             string? line = reader.ReadLine();
             if (line is null) return new SquareRaster(0);
-            float?[] data = new float?[line.Length];
+            var data = new float[line.Length];
             int edgeSize = Deserialize(line, data, 0);
             int size = edgeSize * edgeSize;
             Array.Resize(ref data, size);
@@ -26,7 +25,7 @@
             return new SquareRaster(edgeSize, data);
         }
 
-        static int Deserialize(string line, float?[] data, int offset)
+        static int Deserialize(string line, float[] data, int offset)
         {
             int start = 0;
             int count = 0;
@@ -43,9 +42,14 @@
             {
                 int length = end - start;
                 string substring = line.Substring(start, length);
+                int index = offset + count;
                 if (float.TryParse(substring, out float value))
                 {
-                    data[offset + count] = value;
+                    data[index] = value;
+                }
+                else
+                {
+                    data[index] = float.NaN;
                 }
                 start = end + 1;
                 count++;
