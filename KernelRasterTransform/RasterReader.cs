@@ -2,7 +2,7 @@
 {
     public static class RasterReader
     {
-        public static Raster ReadSquareRaster(string path)
+        public static Raster ReadRaster(string path)
         {
             using FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.None,
                 bufferSize: 4096, FileOptions.SequentialScan);

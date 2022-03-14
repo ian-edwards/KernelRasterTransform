@@ -10,7 +10,7 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            Raster inputRaster = RasterReader.ReadSquareRaster("Data/Data2.csv");
+            Raster inputRaster = RasterReader.ReadRaster("Data/Data2.csv");
             RasterKernel kernel = inputRaster.CreateKernel(borderSize: 1);
             kernel.MoveNext();
             var et = new ExampleSumTransform();
