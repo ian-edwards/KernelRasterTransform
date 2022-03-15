@@ -1,6 +1,5 @@
 using KernelRasterTransform;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace KernelRasterTransformTests
 {
@@ -11,10 +10,8 @@ namespace KernelRasterTransformTests
         public void TestMethod1()
         {
             Raster inputRaster = RasterReader.ReadRaster("Data/Data2.csv");
-            RasterKernel kernel = inputRaster.CreateKernel(borderSize: 1);
-            kernel.MoveNext();
-            var et = new ExampleSumTransform();
-            float f = et.Transform(kernel.Values());
+            var sumTransform = new ExampleSumTransform();
+            Raster outputRaster = RasterTransformer.TransformRaster(inputRaster, kernelBorderSize: 1, sumTransform);
         }
     }
 }

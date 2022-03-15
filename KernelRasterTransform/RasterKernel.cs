@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KernelRasterTransform
+﻿namespace KernelRasterTransform
 {
     public class RasterKernel
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
-
         readonly Raster _raster;
         readonly int _borderSize;
+        int _x;
+        int _y;
 
         internal RasterKernel(Raster raster, int borderSize)
         {
@@ -20,17 +13,17 @@ namespace KernelRasterTransform
             if (borderSize < 0) throw new ArgumentOutOfRangeException(nameof(borderSize), "invalid negative");
             _raster = raster;
             _borderSize = borderSize;
-            X = 0;
-            Y = 0;
+            _x = 0;
+            _y = 0;
         }
 
         public IEnumerable<float> Values()
         {
-            int startX = Start(X);
-            int startY = Start(Y);
+            int startX = Start(_x);
+            int startY = Start(_y);
 
-            int limitX = Limit(X);
-            int limitY = Limit(Y);
+            int limitX = Limit(_x);
+            int limitY = Limit(_y);
 
             for (int x = startX; x < limitX; x++)
             {
@@ -49,12 +42,12 @@ namespace KernelRasterTransform
 
         public bool MoveNext()
         {
-            if(++X == _raster.EdgeSize)
+            if(++_x == _raster.EdgeSize)
             {
-                X = 0;
-                if (++Y == _raster.EdgeSize)
+                _x = 0;
+                if (++_y == _raster.EdgeSize)
                 {
-                    Y = 0;
+                    _y = 0;
                     return false;
                 }
                 return true;
