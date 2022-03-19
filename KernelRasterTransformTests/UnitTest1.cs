@@ -9,9 +9,10 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            Raster inputRaster = RasterReader.ReadRaster("Data/Data2.csv");
-            var sumTransform = new ExampleSumTransform();
-            Raster outputRaster = RasterTransformer.TransformRaster(inputRaster, kernelBorderSize: 1, sumTransform);
+            Raster input = RasterReader.ReadRaster("Data/Data3.csv");
+            RasterKernel kernel = new(input, borderSize: 2);
+            CoefficientOfVarianceTransform transform = new(threshold: 2);
+            Raster output = RasterKernelTransformer.TransformRasterKernel(kernel, transform);
         }
     }
 }

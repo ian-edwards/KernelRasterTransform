@@ -2,52 +2,53 @@
 {
     public class RasterKernel
     {
-        readonly Raster _raster;
-        readonly int _borderSize;
-        int _x;
-        int _y;
+        public Raster Raster { get; private init; }
+        public int BorderSize { get; private init; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
-        internal RasterKernel(Raster raster, int borderSize)
+        public RasterKernel(Raster raster, int borderSize)
         {
             if (raster is null) throw new ArgumentNullException(nameof(raster));
             if (borderSize < 0) throw new ArgumentOutOfRangeException(nameof(borderSize), "invalid negative");
-            _raster = raster;
-            _borderSize = borderSize;
-            _x = 0;
-            _y = 0;
+            Raster = raster;
+            BorderSize = borderSize;
+            X = 0;
+            Y = 0;
         }
 
-        public IEnumerable<float> Values()
+        public IEnumerable<double> Values()
         {
-            int startX = Start(_x);
-            int startY = Start(_y);
+            int startX = Start(X);
+            int startY = Start(Y);
 
-            int limitX = Limit(_x);
-            int limitY = Limit(_y);
+            int limitX = LimitX(X);
+            int limitY = LimitY(Y);
 
             for (int x = startX; x < limitX; x++)
             {
                 for (int y = startY; y < limitY; y++)
                 {
-                    float f = _raster.Value(x, y);
-                    if (!float.IsNaN(f))
+                    double d = Raster.Value(x, y);
+                    if (!double.IsNaN(d))
                     {
-                        yield return f;
+                        yield return d;
                     }
                 }
             }
-            int Start(int xy) => Math.Max(xy - _borderSize, 0);
-            int Limit(int xy) => Math.Min(xy + _borderSize + 1, _raster.EdgeSize);
+            int Start(int xy) => Math.Max(xy - BorderSize, 0);
+            int LimitX(int x) => Math.Min(x + BorderSize + 1, Raster.Width);
+            int LimitY(int y) => Math.Min(y + BorderSize + 1, Raster.Height);
         }
 
         public bool MoveNext()
         {
-            if(++_x == _raster.EdgeSize)
+            if (++X == Raster.Width)
             {
-                _x = 0;
-                if (++_y == _raster.EdgeSize)
+                X = 0;
+                if (++Y == Raster.Height)
                 {
-                    _y = 0;
+                    Y = 0;
                     return false;
                 }
                 return true;

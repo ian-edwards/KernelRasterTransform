@@ -2,16 +2,19 @@
 {
     public class Raster
     {
-        public int EdgeSize { get; private init; }
+        public int Width { get; private init; }
 
-        readonly float[] _data;
+        public int Height { get; private init; }
 
-        internal float Value(int x, int y) => _data[x + y * EdgeSize];
+        readonly double[] _data;
 
-        internal Raster(int edgeSize, float[] data)
+        internal double Value(int x, int y) => _data[x + y * Width];
+
+        internal Raster(int width, int height, double[] data)
         {
             _data = data;
-            EdgeSize = edgeSize;
+            Width = width;
+            Height = height;
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IRasterTransform
     {
-        float Transform(IEnumerable<float> values);
+        double Transform(IEnumerable<double> values);
     }
 }

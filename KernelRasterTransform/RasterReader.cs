@@ -7,25 +7,26 @@
             using FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.None,
                 bufferSize: 4096, FileOptions.SequentialScan);
             using StreamReader reader = new(file);
+            FileInfo info = new(path);
+            long maxValues = info.Length / 2;
             string? line = reader.ReadLine();
-            if (line is null) return new Raster(edgeSize: 0, data: Array.Empty<float>());
-            var data = new float[line.Length];
-            int edgeSize = Deserialize(line, data, 0);
-            int size = edgeSize * edgeSize;
-            Array.Resize(ref data, size);
-            int offset = edgeSize;
+            if (line is null) return new Raster(width: 0, height: 0, data: Array.Empty<double>());
+            var data = new double[maxValues];
+            int width = Deserialize(line, data, 0);
+            int height = 1;
+            int offset = width;
             while ((line = reader.ReadLine()) is not null)
             {
-                int rowSize = Deserialize(line, data, offset);
-                if (rowSize != edgeSize) throw new ArgumentException("not square raster", nameof(path));
-                offset += rowSize;
+                int rowWidth = Deserialize(line, data, offset);
+                if (rowWidth != width) throw new ArgumentException("not rectangular raster", nameof(path));
+                offset += width;
+                height++;
             }
-            int rowCount = offset / edgeSize;
-            if (rowCount != edgeSize) throw new ArgumentException("not square raster", nameof(path));
-            return new Raster(edgeSize, data);
+            Array.Resize(ref data, offset);
+            return new Raster(width, height, data);
         }
 
-        static int Deserialize(string line, float[] data, int offset)
+        static int Deserialize(string line, double[] data, int offset)
         {
             int start = 0;
             int count = 0;
@@ -43,7 +44,7 @@
                 int length = end - start;
                 string substring = line.Substring(start, length);
                 int index = offset + count;
-                if (float.TryParse(substring, out float value))
+                if (double.TryParse(substring, out double value))
                 {
                     data[index] = value;
                 }
