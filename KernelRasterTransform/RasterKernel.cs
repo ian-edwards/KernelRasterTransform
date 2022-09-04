@@ -1,59 +1,24 @@
 ﻿namespace KernelRasterTransform
 {
-    public class RasterKernel
+    public static class RasterKernel
     {
-        public Raster Raster { get; private init; }
-        public int BorderSize { get; private init; }
-        public int X { get; private set; }
-        public int Y { get; private set; }
-
-        public RasterKernel(Raster raster, int borderSize)
+        public static IEnumerable<double> EnumerateValues(this IRasterKernel kernel)
         {
-            if (raster is null) throw new ArgumentNullException(nameof(raster));
-            if (borderSize < 0) throw new ArgumentOutOfRangeException(nameof(borderSize), "invalid negative");
-            Raster = raster;
-            BorderSize = borderSize;
-            X = 0;
-            Y = 0;
-        }
-
-        public IEnumerable<double> Values()
-        {
-            int startX = Start(X);
-            int startY = Start(Y);
-
-            int limitX = LimitX(X);
-            int limitY = LimitY(Y);
-
+            int startX = Math.Max(kernel.X - kernel.BorderX, 0);
+            int startY = Math.Max(kernel.Y - kernel.BorderY, 0);
+            int limitX = Math.Min(kernel.X + kernel.BorderX + 1, kernel.Raster.Width);
+            int limitY = Math.Min(kernel.Y + kernel.BorderY + 1, kernel.Raster.Height);
             for (int x = startX; x < limitX; x++)
             {
                 for (int y = startY; y < limitY; y++)
                 {
-                    double d = Raster.Value(x, y);
+                    double d = kernel.Raster.Value(x, y);
                     if (!double.IsNaN(d))
                     {
                         yield return d;
                     }
                 }
             }
-            int Start(int xy) => Math.Max(xy - BorderSize, 0);
-            int LimitX(int x) => Math.Min(x + BorderSize + 1, Raster.Width);
-            int LimitY(int y) => Math.Min(y + BorderSize + 1, Raster.Height);
-        }
-
-        public bool MoveNext()
-        {
-            if (++X == Raster.Width)
-            {
-                X = 0;
-                if (++Y == Raster.Height)
-                {
-                    Y = 0;
-                    return false;
-                }
-                return true;
-            }
-            return true;
         }
     }
 }

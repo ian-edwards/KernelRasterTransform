@@ -2,6 +2,6 @@
 {
     public interface IRasterTransform
     {
-        double Transform(IEnumerable<double> values);
+        double Transform(IRasterKernel kernel);
     }
 }

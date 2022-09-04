@@ -2,7 +2,7 @@
 {
     public static class RasterReader
     {
-        public static Raster ReadRaster(string path)
+        public static IRaster ReadRaster(string path)
         {
             using FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.None,
                 bufferSize: 4096, FileOptions.SequentialScan);
@@ -10,23 +10,23 @@
             FileInfo info = new(path);
             long maxValues = info.Length / 2;
             string? line = reader.ReadLine();
-            if (line is null) return new Raster(width: 0, height: 0, data: Array.Empty<double>());
+            if (line is null) return new InternalRaster(width: 0, height: 0, data: Array.Empty<double>());
             var data = new double[maxValues];
-            int width = Deserialize(line, data, 0);
+            int width = DeserializeLine(line, data, offset: 0);
             int height = 1;
             int offset = width;
             while ((line = reader.ReadLine()) is not null)
             {
-                int rowWidth = Deserialize(line, data, offset);
-                if (rowWidth != width) throw new ArgumentException("not rectangular raster", nameof(path));
+                int widthRow = DeserializeLine(line, data, offset);
+                if (widthRow != width) throw new ArgumentException("not rectangular raster", nameof(path));
                 offset += width;
                 height++;
             }
             Array.Resize(ref data, offset);
-            return new Raster(width, height, data);
+            return new InternalRaster(data, width, height);
         }
 
-        static int Deserialize(string line, double[] data, int offset)
+        static int DeserializeLine(string line, double[] data, int offset)
         {
             int start = 0;
             int count = 0;
@@ -50,7 +50,7 @@
                 }
                 else
                 {
-                    data[index] = float.NaN;
+                    data[index] = double.NaN;
                 }
                 start = end + 1;
                 count++;

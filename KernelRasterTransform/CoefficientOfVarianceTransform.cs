@@ -10,20 +10,30 @@
             _threshold = threshold;
         }
 
-        public double Transform(IEnumerable<double> values)
+        public double Transform(IRasterKernel kernel)
         {
-            double[] valuesArray = values.ToArray();
-            if (valuesArray.Length > _threshold)
+            // test
+            double d = 0;
+            for(int x = 0; x < kernel.Raster.Width; x++)
             {
-                double avg = valuesArray.Average();
-                double sum = values.Sum(d => Math.Pow(d - avg, 2));
-                double variance = (sum) / (values.Count() - 1);
-                return variance / avg;
+                for (int y = 0; y < kernel.Raster.Height; y++)
+                {
+                    d += kernel.Raster.Value(x, y);
+                }
             }
-            else
-            {
-                return double.NaN;
-            }
+            // end test
+            double[] values = kernel.EnumerateValues().ToArray();
+            return values.Length > _threshold
+                ? d + CoefficientOfVariance(values) // d test
+                : double.NaN;
+        }
+
+        static double CoefficientOfVariance(double[] values)
+        {
+            double mean = values.Average();
+            double sum = values.Sum(d => Math.Pow(d - mean, 2));
+            double variance = sum / (values.Length - 1);
+            return variance / mean;
         }
     }
 }
