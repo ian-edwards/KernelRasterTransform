@@ -4,12 +4,10 @@
     {
         IRaster Raster { get; }
 
-        int X { get; }
+        int BorderSize { get; }
 
-        int Y { get; }
+        int CenterX { get; }
 
-        int BorderX { get; }
-
-        int BorderY { get; }
+        int CenterY { get; }
     }
 }

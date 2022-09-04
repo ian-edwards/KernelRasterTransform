@@ -1,24 +1,11 @@
 ﻿namespace KernelRasterTransform
 {
-    public static class RasterKernel
+    public record RasterKernel(Raster Raster, int BorderSize, int CenterX, int CenterY, int StartX, int StartY, int LimitX, int LimitY)
     {
-        public static IEnumerable<double> EnumerateValues(this IRasterKernel kernel)
-        {
-            int startX = Math.Max(kernel.X - kernel.BorderX, 0);
-            int startY = Math.Max(kernel.Y - kernel.BorderY, 0);
-            int limitX = Math.Min(kernel.X + kernel.BorderX + 1, kernel.Raster.Width);
-            int limitY = Math.Min(kernel.Y + kernel.BorderY + 1, kernel.Raster.Height);
-            for (int x = startX; x < limitX; x++)
-            {
-                for (int y = startY; y < limitY; y++)
-                {
-                    double d = kernel.Raster.Value(x, y);
-                    if (!double.IsNaN(d))
-                    {
-                        yield return d;
-                    }
-                }
-            }
-        }
+        public RasterKernel Move(int x, int y) => new(Raster, BorderSize, CenterX: x, CenterY: y,
+            StartX: Math.Max(x - BorderSize, 0),
+            StartY: Math.Max(y - BorderSize, 0),
+            LimitX: Math.Min(x + BorderSize + 1, Raster.Width),
+            LimitY: Math.Min(y + BorderSize + 1, Raster.Height));
     }
 }

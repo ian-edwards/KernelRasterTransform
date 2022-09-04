@@ -6,6 +6,6 @@
 
         int Height { get; }
 
-        double Value(int x, int y);
+        double[] Data { get; }
     }
 }

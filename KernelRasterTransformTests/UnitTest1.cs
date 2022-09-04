@@ -1,5 +1,6 @@
 using KernelRasterTransform;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 
 namespace KernelRasterTransformTests
 {
@@ -9,10 +10,12 @@ namespace KernelRasterTransformTests
         [TestMethod]
         public void TestMethod1()
         {
-            IRaster raster = RasterReader.ReadRaster("Data/Data2.csv");
-            IRasterKernel kernel = raster.CreateKernel(border: 2);
+            Stopwatch sw = Stopwatch.StartNew();
+            Raster raster = RasterReader.ReadRaster("Data/Data2.csv");
+            RasterKernel kernel = raster.CreateKernel(borderSize: 2);
             CoefficientOfVarianceTransform transform = new(threshold: 2);
-            IRaster output = RasterTransformer.TransformRasterKernel(kernel, transform);
+            Raster output = RasterTransformer.TransformRasterKernel(kernel, transform);
+            Debug.WriteLine(sw.Elapsed);
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿namespace KernelRasterTransform
 {
-    public static class Raster
+    public record Raster(double[] Data, int Width, int Height)
     {
-        public static IRasterKernel CreateKernel(this IRaster raster, int border) => CreateKernel(raster, borderX: border, borderY: border, x: 0, y: 0);
+        public RasterKernel CreateKernel(int borderSize, int centerX, int centerY) => new(this, borderSize, centerX, centerY,
+            StartX: Math.Max(centerX - borderSize, 0),
+            StartY: Math.Max(centerY - borderSize, 0),
+            LimitX: Math.Min(centerX + borderSize + 1, Width),
+            LimitY: Math.Min(centerY + borderSize + 1, Height));
 
-        public static IRasterKernel CreateKernel(this IRaster raster, int borderX, int borderY) => CreateKernel(raster, borderX, borderY, x: 0, y: 0);
-
-        public static IRasterKernel CreateKernel(this IRaster raster, int border, int x, int y) => CreateKernel(raster, borderX: border, borderY: border, x, y);
-
-        public static IRasterKernel CreateKernel(this IRaster raster, int borderX, int borderY, int x, int y) => new InternalRasterKernel(raster, borderX, borderY, x, y);
+        public RasterKernel CreateKernel(int borderSize) => CreateKernel(borderSize, centerX: 0, centerY: 0);
     }
 }

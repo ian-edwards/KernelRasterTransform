@@ -2,6 +2,6 @@
 {
     public interface IRasterTransform
     {
-        double Transform(IRasterKernel kernel);
+        double Transform(RasterKernel kernel);
     }
 }

@@ -4,22 +4,18 @@
     {
         public IRaster Raster { get; private init; }
 
-        public int X { get; private init; }
+        public int BorderSize { get; private init; }
 
-        public int Y { get; private init; }
+        public int CenterX { get; private init; }
 
-        public int BorderX { get; private init; }
+        public int CenterY { get; private init; }
 
-        public int BorderY { get; private init; }
-
-
-        internal InternalRasterKernel(IRaster raster, int borderX, int borderY, int x, int y)
+        internal InternalRasterKernel(IRaster raster, int borderSize, int centerX, int centerY)
         {
             Raster = raster;
-            X = x;
-            Y = y;
-            BorderX = borderX;
-            BorderY = borderY;
+            BorderSize = borderSize;
+            CenterX = centerX;
+            CenterY = centerY;
         }
     }
 }
